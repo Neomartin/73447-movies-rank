@@ -81,7 +81,7 @@
                         <div class="col-6">
 
                             <label for="date">Fecha estreno</label>
-                            <input type="date" name="date" id="date" required class="form-control">
+                            <input type="number" min="1900"  name="date" id="date" required class="form-control">
 
                         </div>
 
@@ -129,8 +129,28 @@
                     <thead>
                         <tr>
                             <th>Imagen</th>
-                            <th>Nombre</th>
-                            <th>Género</th>
+                            <th class="name-header-cell">
+
+                                <div class="name">
+
+                                    Nombre
+                                    <div class="sort-container">
+                                        <i class="fas fa-sort-up sort-up" data-order="asc"  data-propiedad="title"></i>
+                                        <i class="fas fa-sort-down sort-down" data-order="desc"  data-propiedad="title"></i>
+                                    </div>
+
+                                </div>
+                            </th>
+                            <th>Género
+                                <div class="sort-container">
+                                    <i  class="fas fa-sort-up sort-up" 
+                                        data-order="asc"
+                                        data-propiedad="genre"    
+                                    ></i>
+                                    <i class="fas fa-sort-down sort-down" data-order="desc"
+                                     data-propiedad="genre"></i>
+                                </div>
+                            </th>
                             <th>Valoración</th>
                             <th>Fecha Estreno</th>
                             <th>Acciones</th>

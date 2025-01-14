@@ -2,10 +2,10 @@ const movies = [
     {
         id: 1000,
         title: 'The Godfather',
-        genre: 'Drama',
+        genre: 'drama',
         date: 1972,
         score: 5,
-        image: 'https://play-lh.googleusercontent.com/ZucjGxDqQ-cHIN-8YA1HgZx7dFhXkfnz73SrdRPmOOHEax08sngqZMR_jMKq0sZuv5P7-T2Z2aHJ1uGQiys'
+        image: 'https://play-lh.googleusercontent.com/ZucjGxDqQ-cHIN-8YA1HgZx7dFhXkfnz73SrdRPmOOHEax08sngqZMR_jMKq0sZuv5P7-T2Z2aHJ1uGQiys',
 
     },
     {
@@ -18,14 +18,107 @@ const movies = [
     },
     {
         id: 1002,
-        title: 'The Dark Knight',
+        title: 'the Dark Knight',
         genre: 'Action',
         date: 2008,
         score: 4,
         image: 'https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_FMjpg_UX1000_.jpg'
     },
+    {
+        id: 1003,
+        title: 'The Gladiator',
+        genre: 'Action',
+        date: 2000,
+        score: 4,
+        image: 'https://m.media-amazon.com/images/M/MV5BYWQ4YmNjYjEtOWE1Zi00Y2U4LWI4NTAtMTU0MjkxNWQ1ZmJiXkEyXkFqcGc@._V1_.jpg'
+    },
+    {
+        id: 1004,
+        title: 'Inception',
+        genre: 'Action',
+        date: 2010,
+        score: 5,
+        image: 'https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_.jpg'
+    },
+    {
+        id: 1005,
+        title: 'django Unchained',
+        genre: 'Western',
+        date: 2012,
+        score: 3,
+        image: 'https://pics.filmaffinity.com/Django_desencadenado-956246347-large.jpg'
+    },
+    {
+        id: 1006,
+        title: 'World War Z',
+        genre: 'Horror',
+        date: 2013,
+        score: 2,
+        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfbdyQYt18ILy67f55TBL9KiPk_42jViTY-3ZE9_RwhVA3vQ8hE0lCzHxNKTP3NWLm1l0&usqp=CAU'
+    }
 
 ];
+
+const inputDateNumber = document.getElementById("date");
+inputDateNumber.setAttribute("max", new Date().getFullYear());
+
+
+
+const ascTableNameBtn = document.querySelector(".fa-sort-up")
+const descTableNameBtn = document.querySelector(".fa-sort-down") //DOM
+
+ascTableNameBtn.addEventListener("click", function() {
+    console.log("Ascendente")
+    ordenarPeliculas("asc", "title")
+})
+
+descTableNameBtn.addEventListener("click", function() {
+    console.log("Descendente")
+    ordenarPeliculas("desc", "title")
+})
+
+// const orderBtns = document.querySelectorAll("[data-order]")
+
+// // 
+// orderBtns.forEach(btn => {
+//     btn.addEventListener("click", function(evt) {
+        
+//         const ordenamiento = evt.target.dataset.order;
+//         const propiedad = evt.target.dataset.propiedad;
+
+//         ordenarPeliculas(ordenamiento, propiedad)
+//     })
+// })
+
+
+function ordenarPeliculas(ordenamiento, propiedad) {
+
+    const sortedMovies = movies.toSorted( (a, b) => {
+
+        if(ordenamiento === "asc") {
+            return a[propiedad].localeCompare(b[propiedad])
+        }
+
+        if(ordenamiento === "desc") {
+            return b[propiedad].localeCompare(a[propiedad])
+        }
+
+        
+    })
+
+    pintarPeliculas(sortedMovies)
+    // condicion para el ordenamiento
+        // if( a.title.toLowerCase() > b.title.toLowerCase()) {
+        //     return 1;
+        // }        
+        // if( a.title.toLowerCase() < b.title.toLowerCase()) {
+        //     return -1;
+        // } 
+
+        // return a.score > b.score ? 1 : -1;
+
+}
+
 
 pintarPeliculas(movies);
 
@@ -34,7 +127,7 @@ pintarPeliculas(movies);
 const moviesForm = document.getElementById("moviesForm");
 
 
-// Necesito escuchar cuando el usuario envíe el formulario
+// #Submit del formulario
 moviesForm.addEventListener("submit", function(evento) {
     // Evitar que el formulario se envíe
     evento.preventDefault();
@@ -47,7 +140,7 @@ moviesForm.addEventListener("submit", function(evento) {
         title: el.title.value,
         genre: el.genre.value,
         score: el.score.value,
-        date: el.date.value.slice(0, 4),
+        date: el.date.value,  // 2021-10-10
         image: el.image.value,
     }
 
@@ -60,7 +153,7 @@ moviesForm.addEventListener("submit", function(evento) {
 })
 
 // Crear una función que reciba un array lo recorra y pinte una <tr></tr> por cada película
-
+// #Pintar peliculas
 function pintarPeliculas(arrayPeliculas) {
 
     const tbody = document.querySelector("tbody");
@@ -98,7 +191,7 @@ function pintarPeliculas(arrayPeliculas) {
 
                                 <div class="actions">
 
-                                    <button class="btn btn-primary">
+                                    <button class="btn btn-primary" onclick="editarPelicula(${peli.id})">
                                         <i class="fa-solid fa-pencil"></i>
                                     </button>
 
@@ -208,9 +301,33 @@ searchInput.addEventListener("input", function(evt) {
 });
 
 
+// -Filtro de películas por género
 
+// #Editar película
+function editarPelicula(id) {
 
-// #Ordenar las peliculas en base a tu puntuación
+    // Buscar la película en el array de películas por su id
+    const pelicula = movies.find(peli => {
+
+        // return peli.id === id
+        if(peli.id === id) {
+            return true
+        }
+
+    })
+    // Vamos a rellenar el formulario con los datos de la película
+
+    const el = moviesForm.elements;
+
+    el.title.value = pelicula.title;
+    el.genre.value = pelicula.genre;
+
+    // Vamos a cambiar el texto del botón de submit
+    // Vamos a cambiar los estilos del formulario para que se vea diferente
+    // Vamos a cambiar el evento de submit del formulario para que actualice la película en lugar de agregarla
+
+}
+
 
 
 
