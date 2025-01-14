@@ -11,7 +11,7 @@ const movies = [
     {
         id: 1001,
         title: 'God of War',
-        genre: 'Drama',
+        genre: 'drama',
         date: 1994,
         score: 2,
         image: 'https://i5.walmartimages.com/asr/5003a7b8-81c5-4803-beee-df5417f06bbe.1f75ffb05ff4e640f976691214312d6a.jpeg'
@@ -19,7 +19,7 @@ const movies = [
     {
         id: 1002,
         title: 'the Dark Knight',
-        genre: 'Action',
+        genre: 'accion',
         date: 2008,
         score: 4,
         image: 'https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_FMjpg_UX1000_.jpg'
@@ -27,42 +27,47 @@ const movies = [
     {
         id: 1003,
         title: 'The Gladiator',
-        genre: 'Action',
+        genre: 'accion',
         date: 2000,
         score: 4,
         image: 'https://m.media-amazon.com/images/M/MV5BYWQ4YmNjYjEtOWE1Zi00Y2U4LWI4NTAtMTU0MjkxNWQ1ZmJiXkEyXkFqcGc@._V1_.jpg'
     },
-    {
-        id: 1004,
-        title: 'Inception',
-        genre: 'Action',
-        date: 2010,
-        score: 5,
-        image: 'https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_.jpg'
-    },
-    {
-        id: 1005,
-        title: 'django Unchained',
-        genre: 'Western',
-        date: 2012,
-        score: 3,
-        image: 'https://pics.filmaffinity.com/Django_desencadenado-956246347-large.jpg'
-    },
-    {
-        id: 1006,
-        title: 'World War Z',
-        genre: 'Horror',
-        date: 2013,
-        score: 2,
-        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfbdyQYt18ILy67f55TBL9KiPk_42jViTY-3ZE9_RwhVA3vQ8hE0lCzHxNKTP3NWLm1l0&usqp=CAU'
-    }
+    // {
+    //     id: 1004,
+    //     title: 'Inception',
+    //     genre: 'accion',
+    //     date: 2010,
+    //     score: 5,
+    //     image: 'https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_.jpg'
+    // },
+    // {
+    //     id: 1005,
+    //     title: 'django Unchained',
+    //     genre: 'western',
+    //     date: 2012,
+    //     score: 3,
+    //     image: 'https://pics.filmaffinity.com/Django_desencadenado-956246347-large.jpg'
+    // },
+    // {
+    //     id: 1006,
+    //     title: 'World War Z',
+    //     genre: 'terror',
+    //     date: 2013,
+    //     score: 2,
+    //     image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfbdyQYt18ILy67f55TBL9KiPk_42jViTY-3ZE9_RwhVA3vQ8hE0lCzHxNKTP3NWLm1l0&usqp=CAU'
+    // }
 
 ];
+
+let idEditando = null;
+
 
 const inputDateNumber = document.getElementById("date");
 inputDateNumber.setAttribute("max", new Date().getFullYear());
 
 
+// Obtener el formulario de carga de películas desde el DOM
+const moviesForm = document.getElementById("moviesForm");
 
 const ascTableNameBtn = document.querySelector(".fa-sort-up")
 const descTableNameBtn = document.querySelector(".fa-sort-down") //DOM
@@ -123,8 +128,6 @@ function ordenarPeliculas(ordenamiento, propiedad) {
 pintarPeliculas(movies);
 
 
-// Obtener el formulario de carga de películas desde el DOM
-const moviesForm = document.getElementById("moviesForm");
 
 
 // #Submit del formulario
@@ -136,7 +139,8 @@ moviesForm.addEventListener("submit", function(evento) {
     // En base a los datos ingresados por el usuario, crear un objeto de película
 
     const pelicula = {
-        id: new Date().getTime(), 
+        // id: idEditando ? idEditando : Date.now(), 
+        id: idEditando || Date.now(),
         title: el.title.value,
         genre: el.genre.value,
         score: el.score.value,
@@ -146,9 +150,34 @@ moviesForm.addEventListener("submit", function(evento) {
 
     console.log(pelicula)
     // const titulo = evento.target.elements.title.value;
-    // -Agregar la película al array de películas
-    movies.push(pelicula);
 
+    if(idEditando) {
+        // Significa que estoy editando una película
+        const index = movies.findIndex(movie => {
+            if(movie.id === idEditando) {
+                return true;
+            }
+        })
+
+        movies[index] = pelicula;
+        	
+    } else {
+        // Significa que estoy agregando una película
+        // -Agregar la película al array de películas
+        movies.push(pelicula);
+    }
+
+    moviesForm.reset();
+    el.title.focus();
+    if(idEditando) {
+        idEditando = null;
+        moviesForm.classList.remove("bg-success-subtle")
+        const btn = moviesForm.querySelector("button[type='submit']")
+        btn.innerText = "Cargar";
+        btn.classList.remove("btn-success")
+        btn.classList.add("btn-primary")
+    }
+    
     pintarPeliculas(movies);
 })
 
@@ -315,14 +344,38 @@ function editarPelicula(id) {
         }
 
     })
-    // Vamos a rellenar el formulario con los datos de la película
+    // Vamos a rellenar el formulario con los datos de la película	
+    idEditando = pelicula.id;
+
 
     const el = moviesForm.elements;
 
     el.title.value = pelicula.title;
     el.genre.value = pelicula.genre;
+    el.image.value = pelicula.image;
+    el.date.value =  pelicula.date;
+    el.score.value = pelicula.score;
 
     // Vamos a cambiar el texto del botón de submit
+    const btn = moviesForm.querySelector("button[type='submit']")
+
+
+    btn.innerText = "Editar";
+
+
+    // Cambiar clases con JS
+    btn.classList.remove("btn-primary")
+
+    btn.classList.add("btn-success");
+
+    moviesForm.classList.add("bg-success-subtle")
+
+    // Toggle activa o desactiva una clase
+    // btn.classList.toggle("btn-warning");
+    // Contains verifica si un elemento tiene una clase y devuelve un booleano
+    // btn.classList.contains("btn")
+
+
     // Vamos a cambiar los estilos del formulario para que se vea diferente
     // Vamos a cambiar el evento de submit del formulario para que actualice la película en lugar de agregarla
 
