@@ -61,6 +61,8 @@ const movies = [
 
 let idEditando = null;
 
+const btnResetForm = document.getElementById("clear-form");
+
 
 const inputDateNumber = document.getElementById("date");
 inputDateNumber.setAttribute("max", new Date().getFullYear());
@@ -167,17 +169,8 @@ moviesForm.addEventListener("submit", function(evento) {
         movies.push(pelicula);
     }
 
-    moviesForm.reset();
-    el.title.focus();
-    if(idEditando) {
-        idEditando = null;
-        moviesForm.classList.remove("bg-success-subtle")
-        const btn = moviesForm.querySelector("button[type='submit']")
-        btn.innerText = "Cargar";
-        btn.classList.remove("btn-success")
-        btn.classList.add("btn-primary")
-    }
-    
+    resetForm();
+
     pintarPeliculas(movies);
 })
 
@@ -368,7 +361,12 @@ function editarPelicula(id) {
 
     btn.classList.add("btn-success");
 
-    moviesForm.classList.add("bg-success-subtle")
+    moviesForm.classList.add("bg-success-subtle");
+
+    btnResetForm.classList.remove("d-none");
+
+    // btnResetForm.style.border = "4px solid crimson";
+
 
     // Toggle activa o desactiva una clase
     // btn.classList.toggle("btn-warning");
@@ -381,7 +379,26 @@ function editarPelicula(id) {
 
 }
 
+btnResetForm.addEventListener("click", resetForm);
 
+function resetForm() {
+
+    moviesForm.reset();
+    moviesForm.elements.title.focus();
+
+    if(idEditando) {
+
+        btnResetForm.classList.add("d-none");
+        
+        idEditando = null;
+        moviesForm.classList.remove("bg-success-subtle")
+        const btn = moviesForm.querySelector("button[type='submit']")
+        btn.innerText = "Cargar";
+        btn.classList.remove("btn-success")
+        btn.classList.add("btn-primary")
+    }
+    
+}
 
 
 
